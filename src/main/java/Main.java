@@ -21,7 +21,7 @@ public class Main {
 		HashMap<String, Integer> palavras = new HashMap<>();
 
 		BufferedReader ler;
-		BufferedWriter escrever;
+		BufferedWriter escrever = null;
 
 		String palavra, localLer, localEscrever, nomeArquivo, linha;
 		while (true) {
@@ -37,9 +37,43 @@ public class Main {
 		try {
 			linha = ler.readLine();
 			while (linha != null) {
-				
+				linha = linha + " ";
+				palavra = "";
+				for (int i = 0; i < linha.length(); i++) {
+					if (Character.isAlphabetic(linha.charAt(i))) {
+						palavra = palavra + linha.charAt(i);
+					} else {
+						if (palavras.containsKey(palavra)) {
+							palavras.put(palavra, palavras.get(palavra) + 1);
+						} else {
+							palavras.put(palavra, 1);
+						}
+						palavra = "";
+					}
+
+				}
+
 				linha = ler.readLine();
 			}
+		} catch (IOException ex) {
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		try {
+			escrever = new BufferedWriter(new FileWriter("saida.csv"));
+		} catch (IOException ex) {
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		for (String p : palavras.keySet()) {
+			try {
+				escrever.write(p + ", " + palavras.get(p));
+				escrever.newLine();
+			} catch (IOException ex) {
+				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+		try {
+			ler.close();
+			escrever.close();
 		} catch (IOException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
